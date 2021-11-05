@@ -8,16 +8,16 @@ arg_parser.add_argument('pcd_directory', type=str,
                         default='./.',
                         help='''Directory to read point clouds from.
 Defaults to the directory from which this python script is called from''')
+
+arg_parser.add_argument('--downsample_factor', type=float,
+                        default=0.03,
+                        help="Size of voxel cube to merge all points into")
+
 arg_parser.add_argument('pcds_to_view', metavar='pcds_to_view', type=int,
                         default=-1, nargs='*',
                         help='''Which point cloud to view.
 Defaults to -1 to view all point clouds in directory specified.
 Provide point cloud number from 1->N''')
-
-arg_parser.add_argument('voxel_downsample_factor', type=float,
-                        default=0.3, nargs='?',
-                        help="Size of voxel cube to merge all points into")
-
 
 def read_all_point_cloud_files(dir_name: str) -> [()]:
     """
@@ -49,8 +49,9 @@ def voxel_downsample_point_clouds(point_clouds, downsample_factor) -> [()]:
 
 def main():
     args = arg_parser.parse_args()
+    downsample_factor = args.downsample_factor
     og_point_clouds = read_all_point_cloud_files(args.pcd_directory)
-    downsampled_point_clouds = voxel_downsample_point_clouds(og_point_clouds, args.voxel_downsample_factor)
+    downsampled_point_clouds = voxel_downsample_point_clouds(og_point_clouds, downsample_factor)
 
     visualization_processes = []
     # Which point clouds to view. If -1, then ALL of them.
